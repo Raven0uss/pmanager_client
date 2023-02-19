@@ -6,7 +6,7 @@ import { Container } from "./NotFound.styled";
 const NotFound = () => {
     return (
         <Container>
-            <h2>{window.location.pathname} not found.</h2>
+            <h2>Oops, this page does not exist !</h2>
             <Link to="/">Home</Link>
         </Container>
     );
