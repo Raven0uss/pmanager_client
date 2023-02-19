@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
-import useToken from '../hooks/useToken';
+import useToken, { clearToken } from '../hooks/useToken';
+import { get } from 'lodash';
+import { useNavigate } from 'react-router';
 
 const login = async ({ username, password }) => {
     const response = await axios.post('http://localhost:8080/api/auth/login', {
@@ -11,23 +13,41 @@ const login = async ({ username, password }) => {
 }
 
 const Login = () => {
+    const [loading, setLoading] = React.useState(true);
     const [username, setUsername] = React.useState();
     const [password, setPassword] = React.useState();
 
     const { token, setToken } = useToken();
+    const navigate = useNavigate();
 
     const handle = async e => {
         e.preventDefault();
         try {
             const response = await login({ username, password });
-            console.log(response.data);
             setToken(response.data.token);
         } catch (err) {
-            console.log('ntm');
+            // Here manage the login error
+            console.error(err);
         }
     }
 
-    console.log(token);
+    useEffect(() => {
+        (async () => {
+            const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
+                token,
+            }).catch(() => {
+                clearToken();
+            });
+            if (get(response, 'data.userId')) {
+                navigate('/');
+            }
+            setLoading(false);
+        })();
+    }, [navigate, token])
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
     if (!token)
         return (
             <div>
@@ -36,9 +56,6 @@ const Login = () => {
                 <button onClick={handle}>log in</button>
             </div>
         )
-    return (
-        <div>yes !</div>
-    )
 };
 
 export default Login;
