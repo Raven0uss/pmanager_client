@@ -90,8 +90,10 @@ const Editor = (props) => {
         <>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
           <JSONEditor
+            name={name}
             content={content}
             handleEditorDidMount={handleEditorDidMount}
+            editorRef={editorRef}
           />
         </>
       )}

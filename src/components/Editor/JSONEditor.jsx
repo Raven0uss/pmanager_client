@@ -1,8 +1,11 @@
 import React from "react";
 import Editor from "@monaco-editor/react";
 import { Button } from "antd";
+import exportJSON from "./downloadJSON";
 
 const JSONEditor = (props) => {
+  const { name, content, editorRef } = props;
+
   return (
     <div
       style={{
@@ -20,7 +23,17 @@ const JSONEditor = (props) => {
       >
         <div>
           <Button>Import JSON</Button>
-          <Button>Export JSON</Button>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              exportJSON({
+                name,
+                json: editorRef.current.getValue(),
+              });
+            }}
+          >
+            Export JSON
+          </Button>
         </div>
 
         <Button type={"primary"}>Beautify JSON</Button>
@@ -29,7 +42,7 @@ const JSONEditor = (props) => {
       <Editor
         height="100%"
         defaultLanguage="JSON"
-        defaultValue={props.content}
+        defaultValue={content}
         onMount={props.handleEditorDidMount}
       />
     </div>
