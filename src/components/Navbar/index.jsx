@@ -2,20 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { clearToken } from "../../hooks/useToken";
 import { Nav, NavLink } from "./Navbar.styled";
+import withAuth from "../../hoc/withAuth";
 
-const Navbar = () => {
+const Navbar = ({ isAuth }) => {
     const navigate = useNavigate();
 
     return (
         <Nav>
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/apps">Apps</NavLink>
-            <button onClick={() => {
+            {isAuth && <NavLink to="/apps">Apps</NavLink>}
+            {isAuth ? <button onClick={() => {
                 clearToken();
                 navigate('/login');
             }}>Log out</button>
+                :
+                <button onClick={() => {
+                    navigate('/login');
+                }} >
+                    Login
+                </button>
+            }
         </Nav>
     );
 };
 
-export default Navbar;
+export default withAuth({ redirect: false, enableLoading: false })(Navbar);

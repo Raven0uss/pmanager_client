@@ -3,21 +3,29 @@ import { get } from 'lodash';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { clearToken, getToken } from '../hooks/useToken';
+import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux'
+import { changeAuthValue } from '../redux/auth/authSlice'
 
-// Need to add the token to the header
-// Need to manage the display of single elements (Apps for navbar for exemple)
-// if auth or not (maybe use context ?)
-
-const withAuth = Component => ({ ...props }) => {
+const withAuth = ({ redirect, to = '/login', enableLoading = true }) => Component => ({ ...props }) => {
     const [loading, setLoading] = React.useState(true);
+    const isAuth = useSelector((state) => state.auth.value)
+    const dispatch = useDispatch()
     const navigate = useNavigate();
 
+    console.log(enableLoading);
     useEffect(() => {
         (async () => {
             const token = getToken();
             if (!token) {
                 clearToken();
-                navigate('/login');
+                setLoading(false);
+                if (isAuth === true)
+                    dispatch(changeAuthValue(false));
+                if (redirect) {
+                    navigate(to);
+                    return;
+                }
                 return;
             }
             const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
@@ -25,17 +33,31 @@ const withAuth = Component => ({ ...props }) => {
             })
             if (get(response, 'data.userId')) {
                 setLoading(false);
+                if (isAuth === false)
+                    dispatch(changeAuthValue(true));
                 return;
             }
             clearToken();
-            navigate('/login');
+            if (isAuth === true)
+                dispatch(changeAuthValue(false));
+            if (redirect) {
+                navigate(to);
+                return;
+            }
         })();
-    }, [navigate])
+    }, [navigate, dispatch, isAuth])
 
-    if (loading) {
+    if (loading && enableLoading) {
         return <div>Loading...</div>
     }
-    return <Component {...props} />
+    return <Component {...props} isAuth={isAuth} />
+}
+
+withAuth.propTypes = {
+    redirect: PropTypes.bool.isRequired,
+    to: PropTypes.string,
+    enableLoading: PropTypes.bool
 }
 
 export default withAuth;
+
