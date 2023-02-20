@@ -26,7 +26,12 @@ const JSONEditor = (props) => {
         <Button type={"primary"}>Beautify JSON</Button>
       </div>
 
-      <Editor height="100%" defaultLanguage="JSON" defaultValue={props.content} />
+      <Editor
+        height="100%"
+        defaultLanguage="JSON"
+        defaultValue={props.content}
+        onMount={props.handleEditorDidMount}
+      />
     </div>
   );
 };

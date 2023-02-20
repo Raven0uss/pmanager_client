@@ -6,6 +6,8 @@ import { getProjectAPI } from "../../api/projects";
 import JSONEditor from "./JSONEditor";
 
 const Editor = (props) => {
+  const editorRef = React.useRef(null);
+
   const [loading, setLoading] = React.useState(true);
   const [content, setContent] = React.useState("");
 
@@ -15,6 +17,14 @@ const Editor = (props) => {
   const [name, setName] = React.useState(currentName);
 
   const windowSize = useWindowSize();
+
+  const handleEditorDidMount = (editor) => {
+    editorRef.current = editor;
+  };
+
+  const showValue = () => {
+    alert(editorRef.current.getValue());
+  };
 
   React.useEffect(() => {
     (async () => {
@@ -51,13 +61,14 @@ const Editor = (props) => {
       keyboard={false}
       closable={false}
       open={isOpen}
-      onOk={() =>
+      onOk={() => {
+        showValue();
         setEditorOpen({
           isOpen: false,
           isNew: false,
           projectId: null,
-        })
-      }
+        });
+      }}
       okText={"Save JSON"}
       onCancel={() =>
         setEditorOpen({
@@ -78,7 +89,10 @@ const Editor = (props) => {
       ) : (
         <>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
-          <JSONEditor content={content} />
+          <JSONEditor
+            content={content}
+            handleEditorDidMount={handleEditorDidMount}
+          />
         </>
       )}
     </Modal>

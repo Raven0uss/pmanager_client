@@ -71,7 +71,9 @@ const Apps = ({ isAuth }) => {
               onChange={(e) => setFilterName(e.target.value)}
             />
             <ProjectsActionsContainer>
-              <Button type={"primary"}>New App</Button>
+              <Button type={"primary"} onClick={openNewApp}>
+                New App
+              </Button>
               <Button type={"primary"} danger>
                 Delete Apps
               </Button>
