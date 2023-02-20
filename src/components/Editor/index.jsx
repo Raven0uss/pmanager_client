@@ -2,13 +2,18 @@ import { Button, Input, Modal } from "antd";
 import React from "react";
 import useWindowSize from "../../hooks/useWindowSize";
 import calculateEditorSize from "./calculateEditorSize";
-import { getProjectAPI } from "../../api/projects";
+import {
+  createProjectAPI,
+  getProjectAPI,
+  updateProjectAPI,
+} from "../../api/projects";
 import JSONEditor from "./JSONEditor";
 
 const Editor = (props) => {
   const editorRef = React.useRef(null);
 
   const [loading, setLoading] = React.useState(true);
+  const [loadingSave, setLoadingSave] = React.useState(false);
   const [content, setContent] = React.useState("");
 
   const { openEditor, setEditorOpen } = props;
@@ -20,10 +25,6 @@ const Editor = (props) => {
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-  };
-
-  const showValue = () => {
-    alert(editorRef.current.getValue());
   };
 
   React.useEffect(() => {
@@ -54,6 +55,45 @@ const Editor = (props) => {
     windowWidth: windowSize.width,
   });
 
+  const onSave = async () => {
+    setLoadingSave(true);
+    if (isNew) {
+      try {
+        const response = await createProjectAPI({
+          name,
+          content: editorRef.current.getValue(),
+        }).catch((err) => {
+          throw err;
+        });
+      } catch (err) {
+        setLoadingSave(false);
+        return;
+      }
+    } else {
+      try {
+        const response = await updateProjectAPI(projectId, {
+          name,
+          content: editorRef.current.getValue(),
+        }).catch((err) => {
+          throw err;
+        });
+      } catch (err) {
+        setLoadingSave(false);
+        return;
+      }
+    }
+    setLoadingSave(false);
+    onClose();
+  };
+
+  const onClose = () => {
+    setEditorOpen({
+      isOpen: false,
+      isNew: false,
+      projectId: null,
+    });
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -61,28 +101,18 @@ const Editor = (props) => {
       keyboard={false}
       closable={false}
       open={isOpen}
-      onOk={() => {
-        showValue();
-        setEditorOpen({
-          isOpen: false,
-          isNew: false,
-          projectId: null,
-        });
-      }}
       okText={"Save JSON"}
-      onCancel={() =>
-        setEditorOpen({
-          isOpen: false,
-          isNew: false,
-          projectId: null,
-        })
-      }
+      onOk={() => {
+        onSave();
+      }}
+      cancelText={"Close"}
+      onCancel={() => onClose()}
       width={modalSize.width}
       bodyStyle={{
         height: modalSize.height,
       }}
       destroyOnClose={true}
-      confirmLoading={false}
+      confirmLoading={loadingSave}
     >
       {loading ? (
         <div>Loading...</div>

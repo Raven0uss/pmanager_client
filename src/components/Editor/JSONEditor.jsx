@@ -2,6 +2,7 @@ import React from "react";
 import Editor from "@monaco-editor/react";
 import { Button } from "antd";
 import exportJSON from "./downloadJSON";
+import beautifyJSON from "./beautifyJSON";
 
 const JSONEditor = (props) => {
   const { name, content, editorRef } = props;
@@ -22,7 +23,7 @@ const JSONEditor = (props) => {
         }}
       >
         <div>
-          <Button>Import JSON</Button>
+          <Button disabled>Import JSON</Button>
           <Button
             onClick={(e) => {
               e.preventDefault();
@@ -36,7 +37,20 @@ const JSONEditor = (props) => {
           </Button>
         </div>
 
-        <Button type={"primary"}>Beautify JSON</Button>
+        <Button
+          type={"primary"}
+          onClick={() => {
+            try {
+              const beautifuljson = beautifyJSON(editorRef.current.getValue());
+              editorRef.current.setValue(beautifuljson);
+            } catch (err) {
+              console.log(err);
+              alert(err);
+            }
+          }}
+        >
+          Beautify JSON
+        </Button>
       </div>
 
       <Editor
