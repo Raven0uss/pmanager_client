@@ -13,11 +13,17 @@ import {
 } from "./Apps.styled";
 import SearchElement from "../components/SearchElement";
 import moment from "moment";
+import Editor from "../components/Editor";
 
 const Apps = ({ isAuth }) => {
     const [isLoading, setLoading] = React.useState(true);
     const [apps, setApps] = React.useState([]);
     const [filterName, setFilterName] = React.useState('')
+    const [openEditor, setEditorOpen] = React.useState({
+        isOpen: false,
+        isNew: false,
+        projectId: null
+    });
 
     React.useEffect(() => {
         (async () => {
@@ -52,12 +58,18 @@ const Apps = ({ isAuth }) => {
                     <ProjectAppListContainer>
                         {apps.filter((app) => app.name.toLowerCase().includes(filterName.toLowerCase())).map((app) => (
                             <ProjectElement
+                                action={() => setEditorOpen({
+                                    isOpen: true,
+                                    isNew: false,
+                                    projectId: app.id
+                                })}
                                 key={app.id}
                                 name={app.name}
                                 updatedAt={app.updatedAt}
                             />
                         ))}
                     </ProjectAppListContainer>
+                    <Editor openEditor={openEditor} setEditorOpen={setEditorOpen} />
                 </>
             )}
         </AppsContainer>

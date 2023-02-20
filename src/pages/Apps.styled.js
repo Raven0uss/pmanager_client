@@ -30,6 +30,10 @@ const ProjectsActionsContainer = styled.div`
   margin-top: 8px;
   margin-left: 8%;
   margin-bottom: 12px;
+  & > * {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 `;
 
 export {
