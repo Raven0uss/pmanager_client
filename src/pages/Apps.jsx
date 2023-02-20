@@ -22,7 +22,8 @@ const Apps = ({ isAuth }) => {
     const [openEditor, setEditorOpen] = React.useState({
         isOpen: false,
         isNew: false,
-        projectId: null
+        projectId: null,
+        name: "",
     });
 
     React.useEffect(() => {
@@ -39,6 +40,15 @@ const Apps = ({ isAuth }) => {
             setLoading(false);
         })();
     }, [isAuth]);
+
+    const openNewApp = () => {
+        setEditorOpen({
+            isOpen: true,
+            isNew: true,
+            projectId: null,
+            name: ""
+        })
+    }
 
     return (
         <AppsContainer>
@@ -61,7 +71,8 @@ const Apps = ({ isAuth }) => {
                                 action={() => setEditorOpen({
                                     isOpen: true,
                                     isNew: false,
-                                    projectId: app.id
+                                    projectId: app.id,
+                                    name: app.name
                                 })}
                                 key={app.id}
                                 name={app.name}

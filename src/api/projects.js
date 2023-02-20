@@ -13,3 +13,15 @@ export const getProjectsAPI = async () => {
     throw Error;
   }
 };
+
+export const getProjectAPI = async (id) => {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/api/projects/getProject?project_id=${id}`,
+      config()
+    );
+    return response;
+  } catch (err) {
+    throw Error;
+  }
+};
