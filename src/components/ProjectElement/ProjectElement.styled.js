@@ -28,11 +28,11 @@ const ProjectElementName = styled.h4`
 const ProjectElementUpdateContainer = styled.div`
   display: inline;
 `;
-const ProjectElementUpdateLabel = styled.text`
+const ProjectElementUpdateLabel = styled.span`
   font-size: 14px;
   font-style: italic;
 `;
-const ProjectElementUpdateValue = styled.text`
+const ProjectElementUpdateValue = styled.span`
   font-size: 16px;
 `;
 

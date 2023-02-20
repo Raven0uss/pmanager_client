@@ -2,7 +2,6 @@ import { Button, Input, Modal } from "antd";
 import React from "react";
 import useWindowSize from "../../hooks/useWindowSize";
 import calculateEditorSize from "./calculateEditorSize";
-import axios from "axios";
 import { getProjectAPI } from "../../api/projects";
 import JSONEditor from "./JSONEditor";
 
@@ -31,7 +30,9 @@ const Editor = (props) => {
             projectId: null,
           }));
         });
-        setContent(response.data.content);
+        setContent(JSON.stringify(JSON.parse(response.data.content), null, 4));
+        setName(() => currentName);
+        setLoading(false);
       }
     })();
     // This warning strange, it brokes, only isOpen is handy here
@@ -72,9 +73,14 @@ const Editor = (props) => {
       destroyOnClose={true}
       confirmLoading={false}
     >
-      <Input value={name} onChange={(e) => setName(e.target.value)} />
-      
-      <JSONEditor content={content} />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <JSONEditor content={content} />
+        </>
+      )}
     </Modal>
   );
 };
