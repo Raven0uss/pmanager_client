@@ -24,24 +24,26 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await login({ username, password });
+            console.log(response.data.token);
             setToken(response.data.token);
         } catch (err) {
             // Here manage the login error
-            console.error(err);
         }
     }
 
     useEffect(() => {
         (async () => {
-            const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
-                token,
-            }).catch(() => {
-                clearToken();
-            });
-            if (get(response, 'data.userId')) {
-                navigate('/');
-            }
-            setLoading(false);
+            try {
+                const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
+                    token,
+                }).catch(() => {
+                    clearToken();
+                });
+                if (get(response, 'data.userId')) {
+                    navigate('/apps');
+                }
+                setLoading(false);
+            } catch (err) { }
         })();
     }, [navigate, token])
 

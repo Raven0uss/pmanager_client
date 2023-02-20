@@ -6,6 +6,8 @@ import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import NotFound from "./NotFound";
+import Apps from "../pages/Apps";
+import { Wrapper } from "./Router.styled";
 
 const routes = [
     {
@@ -21,6 +23,12 @@ const routes = [
         component: (props) => <Login {...props} />,
     },
     {
+        id: "apps",
+        path: "/apps",
+        exact: true,
+        component: (props) => <Apps {...props} />,
+    },
+    {
         id: "404",
         path: "*",
         exact: false,
@@ -33,7 +41,12 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 {routes.map((route) => {
-                    const component = <React.Fragment><Navbar />{route.component()}</React.Fragment>
+                    const component = (
+                        <React.Fragment>
+                            <Navbar />
+                            <Wrapper>{route.component()}</Wrapper>
+                        </React.Fragment>
+                    );
                     return (
                         <Route
                             key={route.id}

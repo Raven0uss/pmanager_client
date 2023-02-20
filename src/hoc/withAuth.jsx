@@ -13,7 +13,6 @@ const withAuth = ({ redirect, to = '/login', enableLoading = true }) => Componen
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
-    console.log(enableLoading);
     useEffect(() => {
         (async () => {
             const token = getToken();
@@ -28,9 +27,10 @@ const withAuth = ({ redirect, to = '/login', enableLoading = true }) => Componen
                 }
                 return;
             }
+
             const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
                 token,
-            })
+            }).catch();
             if (get(response, 'data.userId')) {
                 setLoading(false);
                 if (isAuth === false)
@@ -44,6 +44,8 @@ const withAuth = ({ redirect, to = '/login', enableLoading = true }) => Componen
                 navigate(to);
                 return;
             }
+
+
         })();
     }, [navigate, dispatch, isAuth])
 

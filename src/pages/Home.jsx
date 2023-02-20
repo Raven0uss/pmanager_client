@@ -5,7 +5,7 @@ const Home = ({ isAuth }) => {
     return (
         <React.Fragment>
             <div>Welcome Home</div>
-            {isAuth && <div>You are log :)</div>}
+            {isAuth ? <div>Check my projects</div> : <div>Login or create an account right now !</div>}
         </React.Fragment>
     )
 };
