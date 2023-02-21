@@ -11,6 +11,9 @@ const register = async ({ username, password }) => {
   return response;
 };
 
+const checkConfirmPasswordStatus = ({ password, confirmPassword }) =>
+  password !== confirmPassword ? "warning" : "";
+
 const RegisterForm = ({ setToken }) => {
   const [username, setUsername] = React.useState();
   const [password, setPassword] = React.useState();
@@ -71,6 +74,7 @@ const RegisterForm = ({ setToken }) => {
           marginBottom: 5,
         }}
         placeholder="Confirm your password"
+        status={checkConfirmPasswordStatus({ password, confirmPassword })}
       />
       <Button
         type={"primary"}
@@ -81,6 +85,7 @@ const RegisterForm = ({ setToken }) => {
           marginTop: 30,
           marginBottom: 5,
         }}
+        disabled={!username || !password || !confirmPassword}
       >
         Register now :)
       </Button>

@@ -66,6 +66,7 @@ const LoginForm = ({ setToken }) => {
           marginTop: 30,
           marginBottom: 5,
         }}
+        disabled={!username || !password}
       >
         Log in !
       </Button>

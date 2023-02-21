@@ -14,6 +14,7 @@ const ProjectAppListContainer = styled.div`
   flex-direction: column;
   margin-top: 16px;
   align-items: center;
+  margin-bottom: 40px;
 `;
 
 const ProjectsToolbar = styled.div`

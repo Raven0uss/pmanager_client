@@ -55,9 +55,10 @@ const JSONEditor = (props) => {
 
       <Editor
         height="100%"
-        defaultLanguage="JSON"
+        defaultLanguage="json"
         defaultValue={content}
         onMount={props.handleEditorDidMount}
+        language="json"
       />
     </div>
   );
