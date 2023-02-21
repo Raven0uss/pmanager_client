@@ -8,48 +8,48 @@ import { PoweroffOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
 const Navbar = () => {
-    const isAuth = useSelector((state) => state.auth.value);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const isAuth = useSelector((state) => state.auth.value);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    return (
-        <Nav>
-            <NavLeft>
-                <NavLink to="/" iscurrentloc={`${location.pathname === "/"}`}>
-                    Home
-                </NavLink>
-                {isAuth && (
-                    <NavLink to="/apps" iscurrentloc={`${location.pathname === "/apps"}`}>
-                        Apps
-                    </NavLink>
-                )}
-            </NavLeft>
-            <NavRight>
-                {isAuth ? (
-                    <Button
-                        icon={<PoweroffOutlined />}
-                        danger
-                        onClick={() => {
-                            clearToken();
-                            dispatch(changeAuthValue(false));
-                            navigate("/login");
-                        }}
-                    >
-                        Log out
-                    </Button>
-                ) : (
-                    <Button
-                        onClick={() => {
-                            navigate("/login");
-                        }}
-                    >
-                        Login
-                    </Button>
-                )}
-            </NavRight>
-        </Nav>
-    );
+  return (
+    <Nav>
+      <NavLeft>
+        <NavLink to="/" iscurrentloc={`${location.pathname === "/"}`}>
+          Home
+        </NavLink>
+        {isAuth && (
+          <NavLink to="/apps" iscurrentloc={`${location.pathname === "/apps"}`}>
+            Apps
+          </NavLink>
+        )}
+      </NavLeft>
+      <NavRight>
+        {isAuth ? (
+          <Button
+            icon={<PoweroffOutlined />}
+            danger
+            onClick={() => {
+              clearToken();
+              dispatch(changeAuthValue(false));
+              navigate("/login");
+            }}
+          >
+            Log out
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login
+          </Button>
+        )}
+      </NavRight>
+    </Nav>
+  );
 };
 
 export default Navbar;

@@ -18,6 +18,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteApps, setApps } from "../redux/apps/appSlice";
 import Loading from "../navigation/Loading";
 
+export const editorInitialState = {
+  isOpen: false,
+  isNew: false,
+  projectId: null,
+  name: "",
+};
+
 const Apps = ({ isAuth }) => {
   const [isLoading, setLoading] = React.useState(true);
 
@@ -28,12 +35,7 @@ const Apps = ({ isAuth }) => {
   const [deleteList, setDeleteList] = React.useState([]);
 
   const [filterName, setFilterName] = React.useState("");
-  const [openEditor, setEditorOpen] = React.useState({
-    isOpen: false,
-    isNew: false,
-    projectId: null,
-    name: "",
-  });
+  const [openEditor, setEditorOpen] = React.useState(editorInitialState);
 
   React.useEffect(() => {
     (async () => {
@@ -182,7 +184,9 @@ const Apps = ({ isAuth }) => {
               ))
             )}
           </ProjectAppListContainer>
-          <Editor openEditor={openEditor} setEditorOpen={setEditorOpen} />
+          {openEditor.isOpen && (
+            <Editor openEditor={openEditor} setEditorOpen={setEditorOpen} />
+          )}
         </>
       )}
     </AppsContainer>

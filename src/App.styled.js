@@ -1,8 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 
-// import "antd/lib/input/style/css";
-// import "antd/lib/table/style/css";
-
 const AppStyled = createGlobalStyle`
 body {
     margin: 0;

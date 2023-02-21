@@ -36,12 +36,13 @@ const withAuth =
             token,
           })
           .catch(() => console.log("hey"));
-        console.log("yo");
+
         if (get(response, "data.userId")) {
           setLoading(false);
           if (isAuth === false) dispatch(changeAuthValue(true));
           return;
         }
+
         clearToken();
         if (isAuth === true) dispatch(changeAuthValue(false));
         if (redirect) {

@@ -12,19 +12,18 @@ import { useDispatch } from "react-redux";
 import { addApp, updateApp } from "../../redux/apps/appSlice";
 import { pick } from "lodash";
 import Loading from "../../navigation/Loading";
+import { editorInitialState } from "../../pages/Apps";
 
 const Editor = (props) => {
   const editorRef = React.useRef(null);
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = React.useState(true);
-  const [loadingSave, setLoadingSave] = React.useState(false);
-  const [content, setContent] = React.useState("");
-
   const { openEditor, setEditorOpen } = props;
   const { isOpen, isNew, projectId, name: currentName } = openEditor;
 
   const [name, setName] = React.useState(currentName);
+  const [loading, setLoading] = React.useState(true);
+  const [content, setContent] = React.useState("");
 
   const windowSize = useWindowSize();
 
@@ -34,82 +33,64 @@ const Editor = (props) => {
 
   React.useEffect(() => {
     (async () => {
-      if (isOpen) {
-        if (isNew) {
-          setLoading(false);
-          return;
-        }
-        getProjectAPI(projectId)
-          .then((response) => {
-            setContent(
-              JSON.stringify(JSON.parse(response.data.content), null, 4)
-            );
-            setName(() => currentName);
-            setLoading(false);
-          })
-          .catch(() => {
-            setEditorOpen(() => ({
-              isOpen: false,
-              isNew: false,
-              projectId: null,
-            }));
-            setLoading(false);
-          });
+      if (isNew) {
+        setLoading(false);
+        return;
       }
+      getProjectAPI(projectId)
+        .then((response) => {
+          setContent(
+            JSON.stringify(JSON.parse(response.data.content), null, 4)
+          );
+          setName(currentName);
+        })
+        .catch(() => {
+          setEditorOpen(editorInitialState);
+        })
+        .finally(() => setLoading(false));
     })();
 
     return () => {
-      setContent("");
       editorRef.current = null;
-      console.log("lol");
     };
-    // This warning strange, it brokes, only isOpen is handy here
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [currentName, isNew, projectId, setEditorOpen]);
 
   const modalSize = calculateEditorSize({
     windowHeight: windowSize.height,
     windowWidth: windowSize.width,
   });
 
-  const onSave = async () => {
-    setLoadingSave(true);
-    if (isNew) {
-      try {
-        const response = await createProjectAPI({
-          name,
-          content: editorRef.current.getValue(),
-        }).catch((err) => {
-          throw err;
-        });
-        dispatch(addApp(response.data));
-      } catch (err) {
-        setLoadingSave(false);
-        return;
-      }
-    } else {
-      try {
-        const response = await updateProjectAPI(projectId, {
-          name,
-          content: editorRef.current.getValue(),
-        }).catch((err) => {
-          throw err;
-        });
-        dispatch(updateApp(pick(response.data[1], ["name", "id", "updateAt"])));
-      } catch (err) {
-        setLoadingSave(false);
-        return;
-      }
+  const saveNewProject = async () => {
+    try {
+      const response = await createProjectAPI({
+        name,
+        content: editorRef.current.getValue(),
+      }).catch((err) => {
+        throw err;
+      });
+      dispatch(addApp(response.data));
+    } catch (err) {
+      return;
     }
-    setLoadingSave(false);
-    onClose();
   };
 
-  const onClose = () => {
-    setEditorOpen({
-      isOpen: false,
-      isNew: false,
-      projectId: null,
+  const saveProject = async () => {
+    try {
+      const response = await updateProjectAPI(projectId, {
+        name,
+        content: editorRef.current.getValue(),
+      }).catch((err) => {
+        throw err;
+      });
+      dispatch(updateApp(pick(response.data, ["name", "id", "updateAt"])));
+    } catch (err) {
+      return;
+    }
+  };
+
+  const onSave = async () => {
+    (isNew ? saveNewProject() : saveProject()).finally(() => {
+      setEditorOpen(editorInitialState);
     });
   };
 
@@ -121,17 +102,14 @@ const Editor = (props) => {
       closable={false}
       open={isOpen}
       okText={"Save JSON"}
-      onOk={() => {
-        onSave();
-      }}
+      onOk={() => onSave()}
       cancelText={"Close"}
-      onCancel={() => onClose()}
+      onCancel={() => setEditorOpen(editorInitialState)}
       width={modalSize.width}
       bodyStyle={{
         height: modalSize.height,
       }}
       destroyOnClose={true}
-      confirmLoading={loadingSave}
     >
       {loading ? (
         <Loading />

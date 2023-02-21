@@ -18,7 +18,6 @@ const LoginForm = ({ setToken }) => {
     e.preventDefault();
     try {
       const response = await login({ username, password });
-      console.log(response.data.token);
       setToken(response.data.token);
     } catch (err) {
       // Here manage the login error
