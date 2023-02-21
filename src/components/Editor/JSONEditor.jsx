@@ -32,6 +32,7 @@ const JSONEditor = (props) => {
                 json: editorRef.current.getValue(),
               });
             }}
+            style={{ marginLeft: 5 }}
           >
             Export JSON
           </Button>

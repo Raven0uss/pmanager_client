@@ -10,6 +10,8 @@ import {
   ProjectsActionsContainer,
   ProjectAppListContainer,
   ProjectsToolbar,
+  NoProjectsFounds,
+  NoProjectsExists,
 } from "./Apps.styled";
 import moment from "moment";
 import Editor from "../components/Editor";
@@ -84,6 +86,9 @@ const Apps = ({ isAuth }) => {
     }
   };
 
+  const appList = apps.filter((app) =>
+    app.name.toLowerCase().includes(filterName.toLowerCase())
+  );
   return (
     <AppsContainer>
       <AppsPageTitle>Your Apps</AppsPageTitle>
@@ -102,6 +107,7 @@ const Apps = ({ isAuth }) => {
               }}
               placeholder="Search app name..."
               onChange={(e) => setFilterName(e.target.value)}
+              disabled={apps.length === 0}
             />
             <ProjectsActionsContainer>
               <Button
@@ -114,7 +120,10 @@ const Apps = ({ isAuth }) => {
               <Button
                 type={"primary"}
                 danger
-                disabled={deleteMode && deleteList.length === 0}
+                disabled={
+                  (deleteMode && deleteList.length === 0) ||
+                  appList.length === 0
+                }
                 onClick={() => {
                   if (deleteMode) {
                     deleteSelected(deleteList);
@@ -139,20 +148,18 @@ const Apps = ({ isAuth }) => {
             </ProjectsActionsContainer>
           </ProjectsToolbar>
 
-          {/* <div
-            style={{
-              display: deleteList.length > 0 ? "block" : "none",
-            }}
-          >
-            {deleteList.length} element
-            {deleteList.length > 1 ? "s" : ""} selected.
-          </div> */}
           <ProjectAppListContainer>
-            {apps
-              .filter((app) =>
-                app.name.toLowerCase().includes(filterName.toLowerCase())
-              )
-              .map((app) => (
+            {apps.length === 0 ? (
+              <NoProjectsExists>
+                <div>Ow, There is no project here.</div>
+                <div>
+                  Select <b>New App</b> to create your first project ! 🚀
+                </div>
+              </NoProjectsExists>
+            ) : appList.length === 0 ? (
+              <NoProjectsFounds>Oops, no results 😞</NoProjectsFounds>
+            ) : (
+              appList.map((app) => (
                 <ProjectElement
                   action={() => {
                     if (deleteMode) {
@@ -172,7 +179,8 @@ const Apps = ({ isAuth }) => {
                   deleteMode={deleteMode}
                   isSelectedToDelete={deleteMode && deleteList.includes(app.id)}
                 />
-              ))}
+              ))
+            )}
           </ProjectAppListContainer>
           <Editor openEditor={openEditor} setEditorOpen={setEditorOpen} />
         </>

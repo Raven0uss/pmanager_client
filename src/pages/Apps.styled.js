@@ -37,10 +37,24 @@ const ProjectsActionsContainer = styled.div`
   }
 `;
 
+const NoProjectsFounds = styled.div`
+  font-size: 18px;
+  margin-top: 20px;
+  color: #b0b0b0;
+`;
+
+const NoProjectsExists = styled.div`
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+`;
+
 export {
   ProjectAppListContainer,
   AppsPageTitle,
   AppsContainer,
   ProjectsActionsContainer,
   ProjectsToolbar,
+  NoProjectsExists,
+  NoProjectsFounds,
 };
