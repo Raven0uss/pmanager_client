@@ -13,10 +13,15 @@ import {
 } from "./Apps.styled";
 import moment from "moment";
 import Editor from "../components/Editor";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteApps, setApps } from "../redux/apps/appSlice";
 
 const Apps = ({ isAuth }) => {
   const [isLoading, setLoading] = React.useState(true);
-  const [apps, setApps] = React.useState([]);
+
+  const apps = useSelector((state) => state.apps.projects);
+  const dispatch = useDispatch();
+
   const [deleteMode, setModeDelete] = React.useState(false);
   const [deleteList, setDeleteList] = React.useState([]);
 
@@ -35,9 +40,8 @@ const Apps = ({ isAuth }) => {
           const response = await getProjectsAPI();
           console.log(response);
           const projects = get(response, "data", []);
-          setApps(() =>
-            projects.sort((a, b) => moment(a.updatedAt).isBefore(b.updatedAt))
-          );
+
+          dispatch(setApps(projects));
         } catch (err) {
           console.log("Error");
         }
@@ -73,6 +77,7 @@ const Apps = ({ isAuth }) => {
       setLoading(true);
       const response = await deleteProjectsAPI(deleteList);
       console.log(response);
+      dispatch(deleteApps(deleteList));
       setDeleteList([]);
       setModeDelete(false);
       setLoading(false);

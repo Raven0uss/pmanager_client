@@ -8,9 +8,13 @@ import {
   updateProjectAPI,
 } from "../../api/projects";
 import JSONEditor from "./JSONEditor";
+import { useDispatch } from "react-redux";
+import { addApp, updateApp } from "../../redux/apps/appSlice";
+import { pick } from "lodash";
 
 const Editor = (props) => {
   const editorRef = React.useRef(null);
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = React.useState(true);
   const [loadingSave, setLoadingSave] = React.useState(false);
@@ -65,6 +69,7 @@ const Editor = (props) => {
         }).catch((err) => {
           throw err;
         });
+        dispatch(addApp(response.data));
       } catch (err) {
         setLoadingSave(false);
         return;
@@ -77,6 +82,7 @@ const Editor = (props) => {
         }).catch((err) => {
           throw err;
         });
+        dispatch(updateApp(pick(response.data[1], ["name", "id", "updateAt"])));
       } catch (err) {
         setLoadingSave(false);
         return;
