@@ -1,5 +1,5 @@
 import React from "react";
-import moment from 'moment';
+import moment from "moment";
 import {
   ProjectElementContainer,
   ProjectElementName,
@@ -10,9 +10,13 @@ import {
 
 const ProjectElement = (props) => {
   return (
-    <ProjectElementContainer onClick={() => {
-      props.action();
-    }}>
+    <ProjectElementContainer
+      onClick={() => {
+        props.action();
+      }}
+      deleteMode={props.deleteMode}
+      isSelected={props.isSelectedToDelete}
+    >
       <ProjectElementName>{props.name}</ProjectElementName>
       <ProjectElementUpdateContainer>
         <ProjectElementUpdateLabel>Last update : </ProjectElementUpdateLabel>

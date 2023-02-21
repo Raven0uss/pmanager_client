@@ -45,9 +45,9 @@ export const updateProjectAPI = async (id, { name, content }) => {
 export const deleteProjectsAPI = async (ids) => {
   try {
     const response = await axios.delete(
-      `${SERVER_URL}/api/projects/deleteProjects?project_id=${ids
+      `${SERVER_URL}/api/projects/deleteProjects?ids=${ids
         .toString()
-        .replace(",", ";")}`,
+        .replace(/,/g, ";")}`,
       config()
     );
     return response;

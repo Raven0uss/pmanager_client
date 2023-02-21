@@ -30,7 +30,10 @@ const withAuth = ({ redirect, to = '/login', enableLoading = true }) => Componen
 
             const response = await axios.post('http://localhost:8080/api/auth/verify-token', {
                 token,
-            }).catch();
+            }).catch(
+             () =>   console.log("hey")
+            );
+            console.log("yo");
             if (get(response, 'data.userId')) {
                 setLoading(false);
                 if (isAuth === false)

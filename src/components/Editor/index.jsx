@@ -1,4 +1,4 @@
-import { Button, Input, Modal } from "antd";
+import { Input, Modal } from "antd";
 import React from "react";
 import useWindowSize from "../../hooks/useWindowSize";
 import calculateEditorSize from "./calculateEditorSize";

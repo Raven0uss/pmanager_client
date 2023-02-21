@@ -3,25 +3,27 @@ import styled from "styled-components";
 const ProjectElementContainer = styled.div`
   width: 80%;
   padding: 10px;
-  background-color: #f6f6f6;
+  background-color: ${(props) =>
+    props.deleteMode ? (props.isSelected ? "#fca6a6" : "#feded7") : "#f6f6f6"};
+  border: ${(props) => (props.isSelected ? "solid 1px #fa5757" : "none")};
+  border-radius: ${(props) => (props.isSelected ? "3px" : "10px")};
   margin-bottom: 4px;
   margin-top: 4px;
-  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  opacity: 0.7;
+  opacity:  ${(props) => (props.isSelected ? "1" : "0.7")};
   &:hover {
-    transition: 0.6s;
+    transition: ${(props) => (props.isSelected ? "0s" : "0.3s")};
     opacity: 1;
     cursor: pointer;
-    border-radius: 0px;
+    border-radius: 3px;
   }
 `;
 
 const ProjectElementName = styled.h4`
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   margin-left: 3px;
 `;
 
