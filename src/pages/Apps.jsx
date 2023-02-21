@@ -13,7 +13,6 @@ import {
   NoProjectsFounds,
   NoProjectsExists,
 } from "./Apps.styled";
-import moment from "moment";
 import Editor from "../components/Editor";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteApps, setApps } from "../redux/apps/appSlice";
@@ -50,7 +49,7 @@ const Apps = ({ isAuth }) => {
         }
       setLoading(false);
     })();
-  }, [isAuth]);
+  }, [isAuth, dispatch]);
 
   const openNewApp = () => {
     setEditorOpen({

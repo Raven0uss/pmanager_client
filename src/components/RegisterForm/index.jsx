@@ -87,7 +87,7 @@ const RegisterForm = ({ setToken }) => {
         }}
         disabled={!username || !password || !confirmPassword}
       >
-        Register now :)
+        Register now 💪
       </Button>
     </div>
   );

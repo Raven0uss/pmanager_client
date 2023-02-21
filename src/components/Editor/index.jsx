@@ -39,18 +39,30 @@ const Editor = (props) => {
           setLoading(false);
           return;
         }
-        const response = await getProjectAPI(projectId).catch(() => {
-          setEditorOpen(() => ({
-            isOpen: false,
-            isNew: false,
-            projectId: null,
-          }));
-        });
-        setContent(JSON.stringify(JSON.parse(response.data.content), null, 4));
-        setName(() => currentName);
-        setLoading(false);
+        getProjectAPI(projectId)
+          .then((response) => {
+            setContent(
+              JSON.stringify(JSON.parse(response.data.content), null, 4)
+            );
+            setName(() => currentName);
+            setLoading(false);
+          })
+          .catch(() => {
+            setEditorOpen(() => ({
+              isOpen: false,
+              isNew: false,
+              projectId: null,
+            }));
+            setLoading(false);
+          });
       }
     })();
+
+    return () => {
+      setContent("");
+      editorRef.current = null;
+      console.log("lol");
+    };
     // This warning strange, it brokes, only isOpen is handy here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -125,7 +137,11 @@ const Editor = (props) => {
         <Loading />
       ) : (
         <>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Choose an app name"
+          />
           <JSONEditor
             name={name}
             content={content}

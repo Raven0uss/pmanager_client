@@ -3,13 +3,17 @@ import axios from "axios";
 import useToken, { clearToken } from "../hooks/useToken";
 import { get } from "lodash";
 import { useNavigate } from "react-router";
+import { useLocation } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 import Loading from "../navigation/Loading";
 
 const Login = () => {
+  const location = useLocation();
   const [loading, setLoading] = React.useState(true);
-  const [tabIndex, setTabIndex] = React.useState(0);
+  const [tabIndex, setTabIndex] = React.useState(
+    get(location, "state.tabIndex", 0)
+  );
 
   const { token, setToken } = useToken();
   const navigate = useNavigate();
