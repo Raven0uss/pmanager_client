@@ -11,6 +11,7 @@ import JSONEditor from "./JSONEditor";
 import { useDispatch } from "react-redux";
 import { addApp, updateApp } from "../../redux/apps/appSlice";
 import { pick } from "lodash";
+import Loading from "../../navigation/Loading";
 
 const Editor = (props) => {
   const editorRef = React.useRef(null);
@@ -121,7 +122,7 @@ const Editor = (props) => {
       confirmLoading={loadingSave}
     >
       {loading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <>
           <Input value={name} onChange={(e) => setName(e.target.value)} />

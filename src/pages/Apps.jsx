@@ -17,6 +17,7 @@ import moment from "moment";
 import Editor from "../components/Editor";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteApps, setApps } from "../redux/apps/appSlice";
+import Loading from "../navigation/Loading";
 
 const Apps = ({ isAuth }) => {
   const [isLoading, setLoading] = React.useState(true);
@@ -94,7 +95,7 @@ const Apps = ({ isAuth }) => {
       <AppsPageTitle>Your Apps</AppsPageTitle>
 
       {isLoading ? (
-        <div>Is loading...</div>
+        <Loading />
       ) : (
         <>
           <ProjectsToolbar>

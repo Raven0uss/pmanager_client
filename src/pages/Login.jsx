@@ -5,6 +5,7 @@ import { get } from "lodash";
 import { useNavigate } from "react-router";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
+import Loading from "../navigation/Loading";
 
 const Login = () => {
   const [loading, setLoading] = React.useState(true);
@@ -32,7 +33,7 @@ const Login = () => {
   }, [navigate, token]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   if (!token)
     return (
