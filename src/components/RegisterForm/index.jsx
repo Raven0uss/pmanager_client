@@ -54,7 +54,7 @@ const RegisterForm = ({ setToken }) => {
         placeholder="Choose a username"
       />
       <div>Password</div>
-      <Input
+      <Input.Password
         type={"password"}
         onChange={(e) => setPassword(e.target.value)}
         style={{
@@ -65,17 +65,22 @@ const RegisterForm = ({ setToken }) => {
         placeholder="Choose a password"
       />
       <div>Confirm Password</div>
-      <Input
+      <Input.Password
         type={"password"}
         onChange={(e) => setConfirmPassword(e.target.value)}
         style={{
           width: "50%",
           marginTop: 5,
-          marginBottom: 5,
+          marginBottom: 0,
         }}
         placeholder="Confirm your password"
         status={checkConfirmPasswordStatus({ password, confirmPassword })}
       />
+      {checkConfirmPasswordStatus({ password, confirmPassword }) && (
+        <div style={{ fontSize: 12, fontWeight: "bold", color: "#FAAD14" }}>
+          Confirm password is not matching
+        </div>
+      )}
       <Button
         type={"primary"}
         size={"large"}
@@ -85,7 +90,12 @@ const RegisterForm = ({ setToken }) => {
           marginTop: 30,
           marginBottom: 5,
         }}
-        disabled={!username || !password || !confirmPassword}
+        disabled={
+          !username ||
+          !password ||
+          !confirmPassword ||
+          checkConfirmPasswordStatus({ password, confirmPassword })
+        }
       >
         Register now 💪
       </Button>

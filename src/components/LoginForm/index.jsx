@@ -46,7 +46,7 @@ const LoginForm = ({ setToken }) => {
         placeholder="Type your username"
       />
       <div>Password</div>
-      <Input
+      <Input.Password
         type={"password"}
         onChange={(e) => setPassword(e.target.value)}
         style={{
