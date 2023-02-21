@@ -1,6 +1,7 @@
 import { Button, Input } from "antd";
 import React from "react";
 import axios from "axios";
+import withNotificationContext from "../../hoc/withNotification";
 
 export const login = async ({ username, password }) => {
   const response = await axios.post("http://localhost:8080/api/auth/login", {
@@ -10,17 +11,27 @@ export const login = async ({ username, password }) => {
   return response;
 };
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = ({ setToken, openNotification }) => {
+  const [loading, setLoading] = React.useState(false);
   const [username, setUsername] = React.useState();
   const [password, setPassword] = React.useState();
 
   const handle = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await login({ username, password });
+      const response = await login({ username, password }).catch((err) => {
+        throw err.message;
+      });
       setToken(response.data.token);
     } catch (err) {
-      // Here manage the login error
+      openNotification({
+        type: "error",
+        message: "Error",
+        description: err,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,6 +77,7 @@ const LoginForm = ({ setToken }) => {
           marginBottom: 5,
         }}
         disabled={!username || !password}
+        loading={loading}
       >
         Log in !
       </Button>
@@ -73,4 +85,4 @@ const LoginForm = ({ setToken }) => {
   );
 };
 
-export default LoginForm;
+export default withNotificationContext(LoginForm);
