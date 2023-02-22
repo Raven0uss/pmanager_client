@@ -1,12 +1,11 @@
-import axios from "axios";
 import { get } from "lodash";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { clearToken, getToken } from "../hooks/useToken";
-import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { changeAuthValue } from "../redux/auth/authSlice";
 import Loading from "../navigation/Loading";
+import { validityTokenAPI } from "../api/auth";
 
 const withAuth =
   ({ redirect, to = "/login", enableLoading = true }) =>
@@ -19,35 +18,37 @@ const withAuth =
 
     useEffect(() => {
       (async () => {
-        const token = getToken();
-        if (!token) {
-          clearToken();
-          setLoading(false);
-          if (isAuth === true) dispatch(changeAuthValue(false));
-          if (redirect) {
-            navigate(to);
-            return;
+        try {
+          // Get Token from localStorage
+          const token = getToken();
+          // Token doesn't exist or unparsable
+          if (!token) {
+            // Remove if dummy data is there
+            clearToken();
+            setLoading(false);
+            // if isAuth was true in the persistant data
+            dispatch(changeAuthValue(false));
+            return redirect && navigate(to);
           }
-          return;
-        }
 
-        const response = await axios
-          .post("http://localhost:8080/api/auth/verify-token", {
-            token,
-          })
-          .catch(() => console.log("hey"));
+          // Ask server for validity of token
+          const response = await validityTokenAPI({ token });
 
-        if (get(response, "data.userId")) {
-          setLoading(false);
-          if (isAuth === false) dispatch(changeAuthValue(true));
-          return;
-        }
+          // Token is valid
+          if (get(response, "data.userId")) {
+            setLoading(false);
+            return isAuth === false && dispatch(changeAuthValue(true));
+          }
 
-        clearToken();
-        if (isAuth === true) dispatch(changeAuthValue(false));
-        if (redirect) {
-          navigate(to);
-          return;
+          // Token is not valid
+          clearToken();
+          dispatch(changeAuthValue(false));
+          return redirect && navigate(to);
+        } catch (err) {
+          // In case of error, remove all and go home
+          clearToken();
+          dispatch(changeAuthValue(false));
+          return redirect && navigate("/");
         }
       })();
     }, [navigate, dispatch, isAuth]);
@@ -57,11 +58,5 @@ const withAuth =
     }
     return <Component {...props} isAuth={isAuth} />;
   };
-
-withAuth.propTypes = {
-  redirect: PropTypes.bool.isRequired,
-  to: PropTypes.string,
-  enableLoading: PropTypes.bool,
-};
 
 export default withAuth;

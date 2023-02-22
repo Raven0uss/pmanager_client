@@ -5,26 +5,19 @@ import exportJSON from "./downloadJSON";
 import beautifyJSON from "./beautifyJSON";
 import withNotificationContext from "../../hoc/withNotification";
 import { get } from "lodash";
+import {
+  EditorContainer,
+  EditorToolsContainer,
+  EditorToolsRightElements,
+} from "./JSONEditor.styled";
 
 const JSONEditor = (props) => {
   const { name, content, editorRef, openNotification } = props;
 
   return (
-    <div
-      style={{
-        height: "80%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 10,
-          marginBottom: 10,
-        }}
-      >
-        <div>
+    <EditorContainer>
+      <EditorToolsContainer>
+        <EditorToolsRightElements>
           <Button disabled>Import JSON</Button>
           <Button
             onClick={(e) => {
@@ -42,11 +35,10 @@ const JSONEditor = (props) => {
                 });
               }
             }}
-            style={{ marginLeft: 5 }}
           >
             Export JSON
           </Button>
-        </div>
+        </EditorToolsRightElements>
 
         <Button
           type={"primary"}
@@ -65,7 +57,7 @@ const JSONEditor = (props) => {
         >
           Beautify JSON
         </Button>
-      </div>
+      </EditorToolsContainer>
 
       <Editor
         height="100%"
@@ -74,7 +66,7 @@ const JSONEditor = (props) => {
         onMount={props.handleEditorDidMount}
         language="json"
       />
-    </div>
+    </EditorContainer>
   );
 };
 

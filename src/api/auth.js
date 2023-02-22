@@ -16,3 +16,14 @@ export const loginAPI = async ({ username, password }) => {
   });
   return response;
 };
+
+export const validityTokenAPI = async ({ token }) => {
+  const response = await axios
+    .post("http://localhost:8080/api/auth/verify-token", {
+      token,
+    })
+    .catch(() => {
+      throw Error;
+    });
+  return response;
+};

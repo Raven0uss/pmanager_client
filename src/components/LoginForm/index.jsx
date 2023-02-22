@@ -1,8 +1,13 @@
-import { Button, Input } from "antd";
 import React from "react";
 import withNotificationContext from "../../hoc/withNotification";
 import { get } from "lodash";
 import { loginAPI } from "../../api/auth";
+import {
+  LoginButton,
+  LoginFormContainer,
+  PasswordInput,
+  UsernameInput,
+} from "./LoginForm.styled";
 
 const LoginForm = ({ setToken, openNotification }) => {
   const [loading, setLoading] = React.useState(false);
@@ -34,55 +39,35 @@ const LoginForm = ({ setToken, openNotification }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: 50,
-        paddingBottom: 30,
-      }}
+    <LoginFormContainer
       onKeyDown={(e) =>
         e.key === "Enter" && username && password && handleConnect(e)
       }
     >
-      <div>Username</div>
-      <Input
+      <label htmlFor="login-username">Username</label>
+      <UsernameInput
         type={"text"}
         onChange={(e) => setUsername(e.target.value)}
-        style={{
-          width: "50%",
-          marginTop: 5,
-          marginBottom: 10,
-        }}
         placeholder="Type your username"
+        id="login-username"
       />
-      <div>Password</div>
-      <Input.Password
+      <label htmlFor="login-password">Password</label>
+      <PasswordInput
         type={"password"}
         onChange={(e) => setPassword(e.target.value)}
-        style={{
-          width: "50%",
-          marginTop: 5,
-          marginBottom: 5,
-        }}
         placeholder="Type your password"
+        id="login-password"
       />
-      <Button
+      <LoginButton
         type={"primary"}
         size={"large"}
         onClick={handleConnect}
-        style={{
-          width: "33%",
-          marginTop: 30,
-          marginBottom: 5,
-        }}
         disabled={!username || !password}
         loading={loading}
       >
         Log in !
-      </Button>
-    </div>
+      </LoginButton>
+    </LoginFormContainer>
   );
 };
 

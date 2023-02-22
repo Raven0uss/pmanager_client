@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import useToken, { clearToken } from "../hooks/useToken";
 import { get } from "lodash";
 import { useNavigate } from "react-router";
@@ -7,10 +6,19 @@ import { useLocation } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 import Loading from "../navigation/Loading";
+import { validityTokenAPI } from "../api/auth";
+import {
+  AuthenticationBox,
+  AuthenticationTabLogin,
+  AuthenticationTabRegister,
+  AuthenticationTabs,
+  LoginContainer,
+} from "./Login.styled";
 
 const Login = () => {
   const location = useLocation();
   const [loading, setLoading] = React.useState(true);
+  // Get location param to check if the user clicked on Sign Up insteat of Login
   const [tabIndex, setTabIndex] = React.useState(
     get(location, "state.tabIndex", 0)
   );
@@ -21,90 +29,42 @@ const Login = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios
-          .post("http://localhost:8080/api/auth/verify-token", {
-            token,
-          })
-          .catch(() => {
-            clearToken();
-          });
-        if (get(response, "data.userId")) {
-          navigate("/apps");
-        }
+        const response = validityTokenAPI({ token });
+        // If user is valid, redirect to the apps page instantly
+        if (get(response, "data.userId")) navigate("/apps");
+      } catch (err) {
+        // Invalid token is destroy
+        clearToken();
+      } finally {
         setLoading(false);
-      } catch (err) {}
+      }
     })();
   }, [navigate, token]);
 
   if (loading) {
     return <Loading />;
   }
+  // If there is a token (valid) user can't see the block
   if (!token)
     return (
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "50%",
-            maxWidth: 620,
-            minWidth: 320,
-            marginTop: 40,
-            border: "solid 2px #F3F3F3",
-            borderRadius: 10,
-            boxShadow: "3px 3px 5px 1px #F3F3F3",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <div
-              style={{
-                flex: "40%",
-                textAlign: "center",
-                padding: 8,
-                cursor: "pointer",
-                backgroundColor: tabIndex === 0 ? "#FFF" : "#F3F3F3",
-                borderBottom: tabIndex !== 0 ? "solid 1px #f0f0f0" : "",
-                color: tabIndex !== 0 ? "#b9b9b9" : "",
-                borderTopLeftRadius: 10,
-                fontWeight: tabIndex === 0 ? "bold" : "normal",
-              }}
-              onClick={() => setTabIndex(0)}
-            >
+      <LoginContainer>
+        <AuthenticationBox>
+          <AuthenticationTabs>
+            <AuthenticationTabLogin onClick={() => setTabIndex(0)}>
               Login
-            </div>
-            <div
-              style={{
-                flex: "40%",
-                textAlign: "center",
-                padding: 8,
-                cursor: "pointer",
-                backgroundColor: tabIndex === 1 ? "#FFF" : "#F3F3F3",
-                borderBottom: tabIndex !== 1 ? "solid 1px #f0f0f0" : "",
-                color: tabIndex !== 1 ? "#b9b9b9" : "",
-                borderTopRightRadius: 10,
-                fontWeight: tabIndex === 1 ? "bold" : "normal",
-              }}
-              onClick={() => setTabIndex(1)}
-            >
+            </AuthenticationTabLogin>
+            <AuthenticationTabRegister onClick={() => setTabIndex(1)}>
               Sign Up
-            </div>
-          </div>
+            </AuthenticationTabRegister>
+          </AuthenticationTabs>
           {tabIndex === 0 && <LoginForm setToken={setToken} />}
           {tabIndex === 1 && <RegisterForm setToken={setToken} />}
-        </div>
-      </div>
+        </AuthenticationBox>
+      </LoginContainer>
     );
+  // To generate a render by functional component just in case
+  // but seems unreachable
+  return null;
 };
 
 export default Login;

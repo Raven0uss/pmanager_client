@@ -2,7 +2,7 @@ import React from "react";
 import withAuth from "../hoc/withAuth";
 import { deleteProjectsAPI, getProjectsAPI } from "../api/projects";
 import { get } from "lodash";
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import ProjectElement from "../components/ProjectElement";
 import {
   AppsContainer,
@@ -12,6 +12,7 @@ import {
   ProjectsToolbar,
   NoProjectsFounds,
   NoProjectsExists,
+  FilterSearchInput,
 } from "./Apps.styled";
 import Editor from "../components/Editor";
 import { useDispatch, useSelector } from "react-redux";
@@ -121,13 +122,9 @@ const Apps = ({ isAuth, openNotification }) => {
       ) : (
         <>
           <ProjectsToolbar>
-            <Input
+            <FilterSearchInput
               value={filterName}
               allowClear
-              style={{
-                width: 250,
-                marginLeft: "8%",
-              }}
               placeholder="Search app name..."
               onChange={(e) => setFilterName(e.target.value)}
               disabled={apps.length === 0}

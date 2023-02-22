@@ -1,20 +1,14 @@
 import { Spin } from "antd";
 import React from "react";
+import { LoadingContainer } from "./Loading.styled";
 
 const Loading = (props) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingBottom: 10,
-      }}
-    >
+    <LoadingContainer>
       <Spin size="large" {...props}>
         {props.children}
       </Spin>
-    </div>
+    </LoadingContainer>
   );
 };
 

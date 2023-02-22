@@ -38,6 +38,7 @@ const Editor = (props) => {
         setLoading(false);
         return;
       }
+      // JSON can be heavy, so we load it in the editor case by case
       try {
         getProjectAPI(projectId)
           .then((response) => {
@@ -66,6 +67,8 @@ const Editor = (props) => {
     };
   }, [currentName, isNew, projectId, setEditorOpen, openNotification]);
 
+  // An error can occurred if the state changement is
+  // too fast for the DOM. 0 data avoid to inject NaN in CSS DOM
   const modalSize = calculateEditorSize({
     windowHeight: isNaN(windowSize.height) ? 0 : windowSize.height,
     windowWidth: isNaN(windowSize.width) ? 0 : windowSize.width,
@@ -103,6 +106,7 @@ const Editor = (props) => {
       }).catch((err) => {
         throw get(err, "response.data", err.message);
       });
+      // We avoid to pass in memory the content which can be heavy
       dispatch(updateApp(pick(response.data, ["name", "id", "updateAt"])));
       openNotification({
         type: "success",

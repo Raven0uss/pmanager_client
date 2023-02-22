@@ -1,3 +1,4 @@
+import { Input } from "antd";
 import styled from "styled-components";
 
 const AppsContainer = styled.div`
@@ -49,6 +50,11 @@ const NoProjectsExists = styled.div`
   margin-top: 20px;
 `;
 
+const FilterSearchInput = styled(Input)`
+  width: 250px;
+  margin-left: 8%;
+`;
+
 export {
   ProjectAppListContainer,
   AppsPageTitle,
@@ -57,4 +63,5 @@ export {
   ProjectsToolbar,
   NoProjectsExists,
   NoProjectsFounds,
+  FilterSearchInput,
 };

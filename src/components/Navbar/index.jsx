@@ -12,9 +12,12 @@ const Navbar = ({ openNotification }) => {
   const isAuth = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // Current loc is used just for CSS Nav
   const location = useLocation();
 
   const logout = () => {
+    // Clear token and dispatch isAuth at false
+    // is directly trigger by HOC
     clearToken();
     openNotification({
       type: "info",
