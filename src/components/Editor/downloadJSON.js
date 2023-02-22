@@ -26,7 +26,7 @@ const exportJSON = ({ json, name }) => {
       fileType: "text/json",
     });
   } catch (err) {
-    alert(err);
+    throw err;
   }
 };
 

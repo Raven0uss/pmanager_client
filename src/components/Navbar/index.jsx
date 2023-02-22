@@ -14,6 +14,17 @@ const Navbar = ({ openNotification }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const logout = () => {
+    clearToken();
+    openNotification({
+      type: "info",
+      message: "Disconnected",
+      description: "See you soon !",
+    });
+    dispatch(changeAuthValue(false));
+    navigate("/login");
+  };
+
   return (
     <Nav>
       <NavLeft>
@@ -28,30 +39,11 @@ const Navbar = ({ openNotification }) => {
       </NavLeft>
       <NavRight>
         {isAuth ? (
-          <Button
-            icon={<PoweroffOutlined />}
-            danger
-            onClick={() => {
-              clearToken();
-              openNotification({
-                type: "info",
-                message: "Disconnected",
-                description: "See you soon !",
-              });
-              dispatch(changeAuthValue(false));
-              navigate("/login");
-            }}
-          >
+          <Button icon={<PoweroffOutlined />} danger onClick={() => logout()}>
             Log out
           </Button>
         ) : (
-          <Button
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Login
-          </Button>
+          <Button onClick={() => navigate("/login")}>Login</Button>
         )}
       </NavRight>
     </Nav>

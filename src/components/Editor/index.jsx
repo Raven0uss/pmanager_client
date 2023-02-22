@@ -10,15 +10,16 @@ import {
 import JSONEditor from "./JSONEditor";
 import { useDispatch } from "react-redux";
 import { addApp, updateApp } from "../../redux/apps/appSlice";
-import { pick } from "lodash";
+import { get, pick } from "lodash";
 import Loading from "../../navigation/Loading";
 import { editorInitialState } from "../../pages/Apps";
+import withNotificationContext from "../../hoc/withNotification";
 
 const Editor = (props) => {
   const editorRef = React.useRef(null);
   const dispatch = useDispatch();
 
-  const { openEditor, setEditorOpen } = props;
+  const { openEditor, setEditorOpen, openNotification } = props;
   const { isOpen, isNew, projectId, name: currentName } = openEditor;
 
   const [name, setName] = React.useState(currentName);
@@ -37,27 +38,37 @@ const Editor = (props) => {
         setLoading(false);
         return;
       }
-      getProjectAPI(projectId)
-        .then((response) => {
-          setContent(
-            JSON.stringify(JSON.parse(response.data.content), null, 4)
-          );
-          setName(currentName);
-        })
-        .catch(() => {
-          setEditorOpen(editorInitialState);
-        })
-        .finally(() => setLoading(false));
+      try {
+        getProjectAPI(projectId)
+          .then((response) => {
+            setContent(
+              JSON.stringify(JSON.parse(response.data.content), null, 4)
+            );
+            setName(currentName);
+          })
+          .catch((err) => {
+            throw get(err, "response.data", err.message);
+          });
+      } catch (err) {
+        openNotification({
+          type: "error",
+          message: "An error occurred 🤕",
+          description: err,
+        });
+        setEditorOpen(editorInitialState);
+      } finally {
+        setLoading(false);
+      }
     })();
 
     return () => {
       editorRef.current = null;
     };
-  }, [currentName, isNew, projectId, setEditorOpen]);
+  }, [currentName, isNew, projectId, setEditorOpen, openNotification]);
 
   const modalSize = calculateEditorSize({
-    windowHeight: windowSize.height,
-    windowWidth: windowSize.width,
+    windowHeight: isNaN(windowSize.height) ? 0 : windowSize.height,
+    windowWidth: isNaN(windowSize.width) ? 0 : windowSize.width,
   });
 
   const saveNewProject = async () => {
@@ -66,11 +77,21 @@ const Editor = (props) => {
         name,
         content: editorRef.current.getValue(),
       }).catch((err) => {
-        throw err;
+        throw get(err, "response.data", err.message);
       });
       dispatch(addApp(response.data));
+      openNotification({
+        type: "success",
+        message: "App Created ! 🎉",
+        description: `${name} has been succesfully created.`,
+      });
+      setEditorOpen(editorInitialState);
     } catch (err) {
-      return;
+      openNotification({
+        type: "error",
+        message: "An error occurred 🤕",
+        description: err,
+      });
     }
   };
 
@@ -80,19 +101,25 @@ const Editor = (props) => {
         name,
         content: editorRef.current.getValue(),
       }).catch((err) => {
-        throw err;
+        throw get(err, "response.data", err.message);
       });
       dispatch(updateApp(pick(response.data, ["name", "id", "updateAt"])));
+      openNotification({
+        type: "success",
+        message: "App saved.",
+        description: `${name} has been succesfully saved.`,
+      });
+      setEditorOpen(editorInitialState);
     } catch (err) {
-      return;
+      openNotification({
+        type: "error",
+        message: "An error occurred 🤕",
+        description: err,
+      });
     }
   };
 
-  const onSave = async () => {
-    (isNew ? saveNewProject() : saveProject()).finally(() => {
-      setEditorOpen(editorInitialState);
-    });
-  };
+  const onSave = async () => (isNew ? saveNewProject() : saveProject());
 
   return (
     <Modal
@@ -132,4 +159,4 @@ const Editor = (props) => {
   );
 };
 
-export default Editor;
+export default withNotificationContext(Editor);

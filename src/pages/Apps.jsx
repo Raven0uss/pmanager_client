@@ -17,6 +17,7 @@ import Editor from "../components/Editor";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteApps, setApps } from "../redux/apps/appSlice";
 import Loading from "../navigation/Loading";
+import withNotificationContext from "../hoc/withNotification";
 
 export const editorInitialState = {
   isOpen: false,
@@ -25,7 +26,7 @@ export const editorInitialState = {
   name: "",
 };
 
-const Apps = ({ isAuth }) => {
+const Apps = ({ isAuth, openNotification }) => {
   const [isLoading, setLoading] = React.useState(true);
 
   const apps = useSelector((state) => state.apps.projects);
@@ -79,12 +80,32 @@ const Apps = ({ isAuth }) => {
       )
     ) {
       setLoading(true);
-      const response = await deleteProjectsAPI(deleteList);
-      console.log(response);
-      dispatch(deleteApps(deleteList));
-      setDeleteList([]);
-      setModeDelete(false);
-      setLoading(false);
+      try {
+        deleteProjectsAPI(deleteList)
+          .then(() => {
+            openNotification({
+              type: "success",
+              message: "Deleted ! 🗑️",
+              description: `${deleteList.length} app${
+                deleteList.length > 1 ? "s" : ""
+              } has been removed.`,
+            });
+            dispatch(deleteApps(deleteList));
+          })
+          .catch((err) => {
+            throw get(err, "response.data", err.message);
+          });
+      } catch (err) {
+        openNotification({
+          type: "error",
+          message: "An error occurred 🤕",
+          description: err,
+        });
+      } finally {
+        setDeleteList([]);
+        setModeDelete(false);
+        setLoading(false);
+      }
     }
   };
 
@@ -153,10 +174,9 @@ const Apps = ({ isAuth }) => {
           <ProjectAppListContainer>
             {apps.length === 0 ? (
               <NoProjectsExists>
-                <div>Ow, There is no project here.</div>
-                <div>
-                  Select <b>New App</b> to create your first project ! 🚀
-                </div>
+                Ow, There is no project here.
+                <br />
+                Select <b>New App</b> to create your first project ! 🚀
               </NoProjectsExists>
             ) : appList.length === 0 ? (
               <NoProjectsFounds>Oops, no results 😞</NoProjectsFounds>
@@ -193,4 +213,6 @@ const Apps = ({ isAuth }) => {
   );
 };
 
-export default withAuth({ redirect: true, to: "/" })(Apps);
+export default withAuth({ redirect: true, to: "/" })(
+  withNotificationContext(Apps)
+);

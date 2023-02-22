@@ -32,4 +32,23 @@ const Link = styled(NavLink)`
   }
 `;
 
-export { HomeTitle, HomeContainer, HomeSubtitle, Link };
+const MadeBy = styled.div`
+  font-size: 12px;
+  margin-top: 30px;
+  border-top: dashed 1px;
+  padding-top: 8px;
+`;
+
+const LinkedInLink = styled.a`
+  color: #0a66c2;
+  font-size: 14px;
+  text-decoration: none;
+  opacity: 0.7;
+  font-weight: bold;
+  &:hover {
+    opacity: 1;
+    transition: 0.5s;
+  }
+`;
+
+export { HomeTitle, HomeContainer, HomeSubtitle, Link, MadeBy, LinkedInLink };

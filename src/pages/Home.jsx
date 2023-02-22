@@ -1,6 +1,13 @@
 import React from "react";
 import withAuth from "../hoc/withAuth";
-import { HomeContainer, HomeSubtitle, HomeTitle, Link } from "./Home.styled";
+import {
+  HomeContainer,
+  HomeSubtitle,
+  HomeTitle,
+  Link,
+  LinkedInLink,
+  MadeBy,
+} from "./Home.styled";
 
 const Home = ({ isAuth }) => {
   return (
@@ -26,6 +33,16 @@ const Home = ({ isAuth }) => {
           </>
         )}
       </HomeSubtitle>
+      <MadeBy>
+        Made with ❤️ by{" "}
+        <LinkedInLink
+          href="https://www.linkedin.com/in/sofiane-belazouz/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Sofiane BELAZOUZ
+        </LinkedInLink>
+      </MadeBy>
     </HomeContainer>
   );
 };

@@ -3,9 +3,11 @@ import Editor from "@monaco-editor/react";
 import { Button } from "antd";
 import exportJSON from "./downloadJSON";
 import beautifyJSON from "./beautifyJSON";
+import withNotificationContext from "../../hoc/withNotification";
+import { get } from "lodash";
 
 const JSONEditor = (props) => {
-  const { name, content, editorRef } = props;
+  const { name, content, editorRef, openNotification } = props;
 
   return (
     <div
@@ -27,10 +29,18 @@ const JSONEditor = (props) => {
           <Button
             onClick={(e) => {
               e.preventDefault();
-              exportJSON({
-                name,
-                json: editorRef.current.getValue(),
-              });
+              try {
+                exportJSON({
+                  name,
+                  json: editorRef.current.getValue(),
+                });
+              } catch (err) {
+                openNotification({
+                  type: "error",
+                  message: "JSON Syntax Error",
+                  description: get(err, "response.data", err.message),
+                });
+              }
             }}
             style={{ marginLeft: 5 }}
           >
@@ -45,8 +55,11 @@ const JSONEditor = (props) => {
               const beautifuljson = beautifyJSON(editorRef.current.getValue());
               editorRef.current.setValue(beautifuljson);
             } catch (err) {
-              console.log(err);
-              alert(err);
+              openNotification({
+                type: "error",
+                message: "JSON Syntax Error",
+                description: get(err, "response.data", err.message),
+              });
             }
           }}
         >
@@ -65,4 +78,4 @@ const JSONEditor = (props) => {
   );
 };
 
-export default JSONEditor;
+export default withNotificationContext(JSONEditor);

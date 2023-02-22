@@ -1,27 +1,19 @@
 import { Button, Input } from "antd";
 import React from "react";
-import axios from "axios";
 import withNotificationContext from "../../hoc/withNotification";
 import { get } from "lodash";
-
-export const login = async ({ username, password }) => {
-  const response = await axios.post("http://localhost:8080/api/auth/login", {
-    username,
-    password,
-  });
-  return response;
-};
+import { loginAPI } from "../../api/auth";
 
 const LoginForm = ({ setToken, openNotification }) => {
   const [loading, setLoading] = React.useState(false);
   const [username, setUsername] = React.useState();
   const [password, setPassword] = React.useState();
 
-  const handle = async (e) => {
+  const handleConnect = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await login({ username, password }).catch((err) => {
+      const response = await loginAPI({ username, password }).catch((err) => {
         throw get(err, "response.data", err.message);
       });
       openNotification({
@@ -50,6 +42,9 @@ const LoginForm = ({ setToken, openNotification }) => {
         paddingTop: 50,
         paddingBottom: 30,
       }}
+      onKeyDown={(e) =>
+        e.key === "Enter" && username && password && handleConnect(e)
+      }
     >
       <div>Username</div>
       <Input
@@ -76,7 +71,7 @@ const LoginForm = ({ setToken, openNotification }) => {
       <Button
         type={"primary"}
         size={"large"}
-        onClick={handle}
+        onClick={handleConnect}
         style={{
           width: "33%",
           marginTop: 30,

@@ -1,34 +1,49 @@
 import { Button, Input } from "antd";
 import React from "react";
-import axios from "axios";
-import { login } from "../LoginForm";
-
-const register = async ({ username, password }) => {
-  const response = await axios.post("http://localhost:8080/api/auth/register", {
-    username,
-    password,
-  });
-  return response;
-};
+import { loginAPI, registerAPI } from "../../api/auth";
+import withNotificationContext from "../../hoc/withNotification";
+import { get } from "lodash";
 
 const checkConfirmPasswordStatus = ({ password, confirmPassword }) =>
   password !== confirmPassword ? "warning" : "";
 
-const RegisterForm = ({ setToken }) => {
+const RegisterForm = ({ setToken, openNotification }) => {
+  const [loading, setLoading] = React.useState(false);
   const [username, setUsername] = React.useState();
   const [password, setPassword] = React.useState();
   const [confirmPassword, setConfirmPassword] = React.useState();
 
-  const handle = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await register({ username, password });
+      const response = await registerAPI({ username, password })
+        .then((response) => response)
+        .catch((err) => {
+          throw get(err, "response.data", err.message);
+        });
       if (response.status === 201) {
-        const loginResponse = await login({ username, password });
-        setToken(loginResponse.data.token);
+        loginAPI({ username, password })
+          .then((loginResponse) => {
+            setToken(loginResponse.data.token);
+            openNotification({
+              type: "success",
+              message: `Welcome ${username} ! 😃`,
+              description: "",
+            });
+          })
+          .catch((err) => {
+            throw get(err, "response.data", err.message);
+          });
       }
     } catch (err) {
-      // Here manage the login error
+      openNotification({
+        type: "error",
+        message: "An error occurred 🤕",
+        description: err,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +99,7 @@ const RegisterForm = ({ setToken }) => {
       <Button
         type={"primary"}
         size={"large"}
-        onClick={handle}
+        onClick={handleRegister}
         style={{
           width: "33%",
           marginTop: 30,
@@ -96,6 +111,7 @@ const RegisterForm = ({ setToken }) => {
           !confirmPassword ||
           checkConfirmPasswordStatus({ password, confirmPassword })
         }
+        loading={loading}
       >
         Register now 💪
       </Button>
@@ -103,4 +119,4 @@ const RegisterForm = ({ setToken }) => {
   );
 };
 
-export default RegisterForm;
+export default withNotificationContext(RegisterForm);
