@@ -1,7 +1,7 @@
 import React from "react";
 import Editor from "@monaco-editor/react";
 import { Button } from "antd";
-import exportJSON from "./downloadJSON";
+import exportJSON from "./exportJSON";
 import beautifyJSON from "./beautifyJSON";
 import withNotificationContext from "../../hoc/withNotification";
 import { get } from "lodash";
@@ -10,6 +10,7 @@ import {
   EditorToolsContainer,
   EditorToolsRightElements,
 } from "./JSONEditor.styled";
+import importJSON from "./importJSON";
 
 const JSONEditor = (props) => {
   const { name, content, editorRef, openNotification } = props;
@@ -18,7 +19,20 @@ const JSONEditor = (props) => {
     <EditorContainer>
       <EditorToolsContainer>
         <EditorToolsRightElements>
-          <Button disabled>Import JSON</Button>
+          <Button
+            onClick={(e) => {
+              e.preventDefault()
+              importJSON(editorRef);
+            }}
+          >
+            Import JSON
+          </Button>
+          <input
+            type="file"
+            hidden
+            id="json-input-upload"
+            accept="application/JSON"
+          />
           <Button
             onClick={(e) => {
               e.preventDefault();
