@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeAuthValue } from "../../redux/auth/authSlice";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import withNotificationContext from "../../hoc/withNotification";
 
-const Navbar = () => {
+const Navbar = ({ openNotification }) => {
   const isAuth = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,6 +33,11 @@ const Navbar = () => {
             danger
             onClick={() => {
               clearToken();
+              openNotification({
+                type: "info",
+                message: "Disconnected",
+                description: "See you soon !",
+              });
               dispatch(changeAuthValue(false));
               navigate("/login");
             }}
@@ -52,4 +58,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default withNotificationContext(Navbar);

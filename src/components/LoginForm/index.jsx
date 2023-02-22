@@ -24,11 +24,16 @@ const LoginForm = ({ setToken, openNotification }) => {
       const response = await login({ username, password }).catch((err) => {
         throw get(err, "response.data", err.message);
       });
+      openNotification({
+        type: "success",
+        message: "Connected !",
+        description: `Good to see you ${username}. 😀`,
+      });
       setToken(response.data.token);
     } catch (err) {
       openNotification({
         type: "error",
-        message: "Error",
+        message: "An error occurred 🤕",
         description: err,
       });
     } finally {
