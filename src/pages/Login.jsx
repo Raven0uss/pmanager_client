@@ -29,7 +29,7 @@ const Login = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = validityTokenAPI({ token });
+        const response = await validityTokenAPI({ token });
         // If user is valid, redirect to the apps page instantly
         if (get(response, "data.userId")) navigate("/apps");
       } catch (err) {

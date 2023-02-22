@@ -3,25 +3,16 @@ import { loginAPI, registerAPI } from "../../api/auth";
 import withNotificationContext from "../../hoc/withNotification";
 import { get } from "lodash";
 import {
-  ConfirmPasswordInput,
   PasswordInput,
   RegisterButton,
   RegisterFormContainer,
   UsernameInput,
-  WarnBoxPasswordNotMatching,
 } from "./RegisterForm.styled";
-
-// Can be send to Input for the style
-// But with empty and plain string can be interpreted as boolean by js
-// (Not usable in TypeScript or strict compare type)
-const checkConfirmPasswordStatus = ({ password, confirmPassword }) =>
-  password !== confirmPassword ? "warning" : "";
 
 const RegisterForm = ({ setToken, openNotification }) => {
   const [loading, setLoading] = React.useState(false);
   const [username, setUsername] = React.useState();
   const [password, setPassword] = React.useState();
-  const [confirmPassword, setConfirmPassword] = React.useState();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -73,19 +64,6 @@ const RegisterForm = ({ setToken, openNotification }) => {
         placeholder="Choose a password"
         id="register-password"
       />
-      <label htmlFor="register-confirmpass">Confirm Password</label>
-      <ConfirmPasswordInput
-        type={"password"}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder="Confirm your password"
-        status={checkConfirmPasswordStatus({ password, confirmPassword })}
-        id="register-confirmpass"
-      />
-      {checkConfirmPasswordStatus({ password, confirmPassword }) && (
-        <WarnBoxPasswordNotMatching>
-          Confirm password is not matching
-        </WarnBoxPasswordNotMatching>
-      )}
       <RegisterButton
         type={"primary"}
         size={"large"}
@@ -97,10 +75,7 @@ const RegisterForm = ({ setToken, openNotification }) => {
         }}
         disabled={
           !username ||
-          !password ||
-          !confirmPassword ||
-          checkConfirmPasswordStatus({ password, confirmPassword })
-          // Confirm password is useless in server side, so we block only on client
+          !password
         }
         loading={loading}
       >
