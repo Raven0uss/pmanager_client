@@ -2,6 +2,7 @@ import { Button, Input } from "antd";
 import React from "react";
 import axios from "axios";
 import withNotificationContext from "../../hoc/withNotification";
+import { get } from "lodash";
 
 export const login = async ({ username, password }) => {
   const response = await axios.post("http://localhost:8080/api/auth/login", {
@@ -21,7 +22,7 @@ const LoginForm = ({ setToken, openNotification }) => {
     setLoading(true);
     try {
       const response = await login({ username, password }).catch((err) => {
-        throw err.message;
+        throw get(err, "response.data", err.message);
       });
       setToken(response.data.token);
     } catch (err) {
