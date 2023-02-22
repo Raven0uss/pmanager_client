@@ -8,8 +8,7 @@ import Loading from "../navigation/Loading";
 import { validityTokenAPI } from "../api/auth";
 
 const withAuth =
-  ({ redirect, to = "/login", enableLoading = true }) =>
-  (Component) =>
+  (Component, { redirect, to = "/login", enableLoading = true }) =>
   ({ ...props }) => {
     const [loading, setLoading] = React.useState(true);
     const isAuth = useSelector((state) => state.auth.value);

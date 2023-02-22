@@ -47,4 +47,4 @@ const Home = ({ isAuth }) => {
   );
 };
 
-export default withAuth({ redirect: false })(Home);
+export default withAuth(Home, { redirect: false });

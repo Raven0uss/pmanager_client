@@ -40,7 +40,7 @@ const Editor = (props) => {
       }
       // JSON can be heavy, so we load it in the editor case by case
       try {
-        getProjectAPI(projectId)
+        await getProjectAPI(projectId)
           .then((response) => {
             setContent(
               JSON.stringify(JSON.parse(response.data.content), null, 4)

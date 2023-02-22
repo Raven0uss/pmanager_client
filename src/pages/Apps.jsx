@@ -210,6 +210,7 @@ const Apps = ({ isAuth, openNotification }) => {
   );
 };
 
-export default withAuth({ redirect: true, to: "/" })(
-  withNotificationContext(Apps)
-);
+export default withAuth(withNotificationContext(Apps), {
+  redirect: true,
+  to: "/",
+});
