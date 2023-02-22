@@ -40,3 +40,12 @@ npm run test
 ```
 
 Have fun !
+
+
+### Build
+
+The build is also of course working, you can build the application with these following command to try out.
+
+```bash
+npm run build
+```
