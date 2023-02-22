@@ -50,10 +50,16 @@ const Login = () => {
       <LoginContainer>
         <AuthenticationBox>
           <AuthenticationTabs>
-            <AuthenticationTabLogin onClick={() => setTabIndex(0)}>
+            <AuthenticationTabLogin
+              onClick={() => setTabIndex(0)}
+              tabIndex={tabIndex}
+            >
               Login
             </AuthenticationTabLogin>
-            <AuthenticationTabRegister onClick={() => setTabIndex(1)}>
+            <AuthenticationTabRegister
+              onClick={() => setTabIndex(1)}
+              tabIndex={tabIndex}
+            >
               Sign Up
             </AuthenticationTabRegister>
           </AuthenticationTabs>
