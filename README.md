@@ -1,4 +1,4 @@
-# pmanager_server
+# pmanager_client
 
 My name is Sofiane BELAZOUZ and this project is my assignement test.
 This Client is used with an API on [this repository](https://github.com/Raven0uss/pmanager_server).
